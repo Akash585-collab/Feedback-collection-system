@@ -11,22 +11,23 @@ const PORT = process.env.PORT || 5000; // Render provides PORT env
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend (static files from "public" folder)
-app.use(express.static(path.join(__dirname, "public")));
-
+// ✅ Serve frontend (static files from "frontend" folder)
+app.use(express.static(path.join(__dirname, "frontend")));
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
-// Routes
+// ✅ API Routes
 app.use("/auth", authRoutes);
 app.use("/feedback", feedbackRoutes);
 
-// ✅ Fallback (for invalid routes)
+// ✅ Handle unknown routes (optional: redirect to index)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
-app.listen(PORT, () =>
-  console.log(`✅ Server running on port ${PORT}`)
-);
+// ✅ Start server
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
+
