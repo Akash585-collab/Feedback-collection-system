@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Feedback Page</title>
     <style>
+      /* --- styles unchanged --- */
       body {
         font-family: Arial, sans-serif;
         background: linear-gradient(to right, #8360c3, #2ebf91);
@@ -109,7 +110,6 @@
       .actions button:hover {
         background: #333;
       }
-      /* Dark Mode Toggle */
       .theme-toggle {
         margin-left: 10px;
         cursor: pointer;
@@ -122,7 +122,6 @@
         background: #333;
         color: #f1f1f1;
       }
-      /* Notifications */
       .notification {
         position: fixed;
         top: 20px;
@@ -150,14 +149,7 @@
   </head>
   <body>
     <div class="container">
-      <div
-        class="topbar"
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
+      <div class="topbar" style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Feedback Page</h2>
         <div>
           <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
@@ -165,8 +157,7 @@
         </div>
       </div>
 
-      <textarea id="feedback" placeholder="Write your feedback..."></textarea
-      ><br />
+      <textarea id="feedback" placeholder="Write your feedback..."></textarea><br />
       <button onclick="submitFeedback()">Submit Feedback</button>
 
       <h3>All Feedbacks</h3>
@@ -176,6 +167,12 @@
     <div id="notification" class="notification"></div>
 
     <script>
+      // ✅ Auto-detect API base
+      const API_BASE =
+        window.location.hostname === "localhost"
+          ? "http://localhost:5000"
+          : window.location.origin;
+
       const token = localStorage.getItem("token");
       const email = localStorage.getItem("email");
 
@@ -196,13 +193,13 @@
         const feedback = document.getElementById("feedback").value;
         if (!feedback.trim())
           return showNotification("Feedback cannot be empty", "error");
-        const res = await fetch("http://localhost:5000/feedback", {
+        const res = await fetch(`${API_BASE}/feedback`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
           },
-          body: JSON.stringify({ feedback }),
+          body: JSON.stringify({ email, feedback }),
         });
         const data = await res.json();
         if (res.ok) {
@@ -215,7 +212,7 @@
       }
 
       async function loadFeedbacks() {
-        const res = await fetch("http://localhost:5000/feedback");
+        const res = await fetch(`${API_BASE}/feedback`);
         const data = await res.json();
         const list = document.getElementById("fbList");
         list.innerHTML = "";
@@ -223,11 +220,10 @@
           const div = document.createElement("div");
           div.className = "feedback-item";
           div.innerHTML = `
-          <strong>${f.email}</strong>: ${f.feedback}
-          <div class="feedback-time">Posted on: ${new Date().toLocaleString()}</div>
-        `;
+            <strong>${f.email || "Anonymous"}</strong>: ${f.feedback}
+            <div class="feedback-time">Posted on: ${new Date().toLocaleString()}</div>
+          `;
 
-          // Only show Edit/Delete for own feedback
           if (f.email === email) {
             const actions = document.createElement("div");
             actions.className = "actions";
@@ -255,7 +251,7 @@
       }
 
       async function deleteFeedback(text) {
-        // For now, just simulate delete since we don’t have DB
+        // Placeholder — will need a DELETE API on backend later
         showNotification("Feedback deleted (demo)", "error");
       }
 
