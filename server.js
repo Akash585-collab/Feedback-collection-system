@@ -6,22 +6,27 @@ const authRoutes = require("./routes/authRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000; // Render provides PORT env
 
 app.use(cors());
 app.use(express.json());
 
-// ✅ API Routes
+// ✅ Serve frontend (static files from "public" folder)
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Routes
 app.use("/auth", authRoutes);
 app.use("/feedback", feedbackRoutes);
 
-// ✅ Serve frontend build (React/Vite/CRA)
-app.use(express.static(path.join(__dirname, "frontend", "build")));
+// ✅ Fallback (for invalid routes)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✅ Start server
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`✅ Server running on port ${PORT}`)
+);
