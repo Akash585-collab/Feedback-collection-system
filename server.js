@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000; // Render provides PORT env
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve frontend (static files from "frontend" folder)
+// ✅ Serve frontend (index.html + feedback.html)
 app.use(express.static(path.join(__dirname, "frontend")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "index.html"));
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/feedback", feedbackRoutes);
 
-// ✅ Handle unknown routes (optional: redirect to index)
+// ✅ Fallback (for unknown routes, optional)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
@@ -30,4 +30,3 @@ app.get("*", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
-
