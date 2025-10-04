@@ -70,16 +70,10 @@
     </div>
 
     <script>
-      // ✅ Auto-detect API base URL (works both locally & on Render)
-      const API_BASE =
-        window.location.hostname === "localhost"
-          ? "http://localhost:5000"
-          : window.location.origin;
-
       async function register() {
         const email = document.getElementById("regEmail").value;
         const password = document.getElementById("regPass").value;
-        const res = await fetch(`${API_BASE}/auth/register`, {
+        const res = await fetch("http://localhost:5000/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -91,7 +85,7 @@
       async function login() {
         const email = document.getElementById("logEmail").value;
         const password = document.getElementById("logPass").value;
-        const res = await fetch(`${API_BASE}/auth/login`, {
+        const res = await fetch("http://localhost:5000/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
